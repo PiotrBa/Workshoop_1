@@ -4,15 +4,21 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        task();
-
+        menu();
+        //tasks = getTasks("/Users/piotr/Desktop/CodersLab/Blok1/Workshoop_1/TaskManager/src/main/resources/tasks.csv");
+        options();
     }
 
-    public static void task() {
+    static String[][] tasks;
+
+
+
+    public static void menu() {
         final String BLUE = "\033[0;34m";
         System.out.println(BLUE.concat("Please select an option"));
         final String RESET = "\033[0m";
@@ -23,6 +29,33 @@ public class Main {
         System.out.println();
         options();
     }
+
+    public static String[][] getTasks (String fileName){
+        Path path = Paths.get(fileName);
+        if (!Files.exists(path)) {
+            System.out.println("File not exist.");
+            System.exit(0);
+        }
+        String[][] tab = null;
+        try {
+            List<String> strings = Files.readAllLines(path);
+            tab = new String[strings.size()][strings.get(0).split(",").length];
+
+            for (int i = 0; i < strings.size(); i++) {
+                String[] split = strings.get(i).split(",");
+                for (int j = 0; j < split.length; j++) {
+                    tab[i][j] = split[j];
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return tab;
+    }
+
+
+
+
 
     public static void options() {
         Path path = Paths.get("/Users/piotr/Desktop/CodersLab/Blok1/Workshoop_1/TaskManager/src/main/resources/tasks.csv");
@@ -63,28 +96,20 @@ public class Main {
 
 
                 while (true) {
-                    task();
+                    menu();
                     options();
                 }
             case "2":
                 System.out.println("remove");
                 while (true) {
-                    task();
+                    menu();
                     options();
                 }
             case "3":
                 System.out.println("list");
-                try {
-                    for (String line : Files.readAllLines(path)) {
-                        System.out.println(line);
-
-                    }
-                } catch (IOException e) {
-                    System.out.println("The list cannot be shown.");
-                }
-                System.out.println();
+                getTasks("/Users/piotr/Desktop/CodersLab/Blok1/Workshoop_1/TaskManager/src/main/resources/tasks.csv");
                 while (true) {
-                    task();
+                    menu();
                     options();
                 }
             case "4":
