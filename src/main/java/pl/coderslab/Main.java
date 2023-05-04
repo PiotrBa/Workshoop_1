@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -36,13 +37,11 @@ public class Main {
 
         switch (option) {
             case "1":
-                System.out.println("add");
 
                 System.out.println("Pleas add task description");
                 addList.add(scanner.nextLine());
                 try {
                     Files.write(path, addList);
-                    //String[][] array = Arrays.
                 } catch (IOException e) {
                     System.out.println("Description cannot be saved");
                 }
@@ -60,7 +59,7 @@ public class Main {
                 System.out.println("Is you task is important");
                 addList.add(scanner.nextLine());
                 try {
-                    Files.write(path, addList);
+                    Files.write(path, addList, StandardOpenOption.APPEND);
                 } catch (IOException e) {
                     System.out.println("Important status cannot be saved");
                 }
