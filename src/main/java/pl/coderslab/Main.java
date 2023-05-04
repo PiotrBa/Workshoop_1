@@ -4,19 +4,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         menu();
-        //tasks = getTasks("/Users/piotr/Desktop/CodersLab/Blok1/Workshoop_1/TaskManager/src/main/resources/tasks.csv");
         options();
     }
-
-    static String[][] tasks;
-
-
 
     public static void menu() {
         final String BLUE = "\033[0;34m";
@@ -30,35 +26,10 @@ public class Main {
         options();
     }
 
-    public static String[][] getTasks (String fileName){
-        Path path = Paths.get(fileName);
-        if (!Files.exists(path)) {
-            System.out.println("File not exist.");
-            System.exit(0);
-        }
-        String[][] tab = null;
-        try {
-            List<String> strings = Files.readAllLines(path);
-            tab = new String[strings.size()][strings.get(0).split(",").length];
-
-            for (int i = 0; i < strings.size(); i++) {
-                String[] split = strings.get(i).split(",");
-                for (int j = 0; j < split.length; j++) {
-                    tab[i][j] = split[j];
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return tab;
-    }
-
-
-
-
 
     public static void options() {
         Path path = Paths.get("/Users/piotr/Desktop/CodersLab/Blok1/Workshoop_1/TaskManager/src/main/resources/tasks.csv");
+        List<String> addList = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
         String option = scanner.nextLine();
 
@@ -68,28 +39,28 @@ public class Main {
                 System.out.println("add");
 
                 System.out.println("Pleas add task description");
-                String addDescription = scanner.nextLine();
+                addList.add(scanner.nextLine());
                 try {
-                    Files.writeString(path, addDescription);
+                    Files.write(path, addList);
                     //String[][] array = Arrays.
                 } catch (IOException e) {
                     System.out.println("Description cannot be saved");
                 }
 
 
-                System.out.println("Please add task date");
-                String addDate = scanner.nextLine();
+                System.out.println("Please add task date (yyyy-mm-dd):");
+                addList.add(scanner.nextLine());
                 try {
-                    Files.writeString(path, addDate);
+                    Files.write(path, addList);
                 } catch (IOException e) {
                     System.out.println("Date cannot be saved");
                 }
 
 
                 System.out.println("Is you task is important");
-                String addImportant = scanner.nextLine();
+                addList.add(scanner.nextLine());
                 try {
-                    Files.writeString(path, addImportant);
+                    Files.write(path, addList);
                 } catch (IOException e) {
                     System.out.println("Important status cannot be saved");
                 }
@@ -106,8 +77,15 @@ public class Main {
                     options();
                 }
             case "3":
-                System.out.println("list");
-                getTasks("/Users/piotr/Desktop/CodersLab/Blok1/Workshoop_1/TaskManager/src/main/resources/tasks.csv");
+                try {
+                    for (String line : Files.readAllLines(path)) {
+                        System.out.println(line);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
                 while (true) {
                     menu();
                     options();
