@@ -41,7 +41,7 @@ public class Main {
                 System.out.println("Pleas add task description");
                 addList.add(scanner.nextLine());
                 try {
-                    Files.write(path, addList);
+                    Files.write(path, addList, StandardOpenOption.APPEND);
                 } catch (IOException e) {
                     System.out.println("Description cannot be saved");
                 }
@@ -50,7 +50,7 @@ public class Main {
                 System.out.println("Please add task date (yyyy-mm-dd):");
                 addList.add(scanner.nextLine());
                 try {
-                    Files.write(path, addList);
+                    Files.write(path, addList, StandardOpenOption.APPEND);
                 } catch (IOException e) {
                     System.out.println("Date cannot be saved");
                 }
