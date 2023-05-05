@@ -33,15 +33,22 @@ public class Main {
         List<String> addList = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
         String option = scanner.nextLine();
+        int index = 0;
+
 
 
         switch (option) {
             case "1":
 
                 System.out.println("Pleas add task description");
+                for (int i = 1; i < 100000; i++){
+                    index = i++;
+
+                }
+                addList.indexOf(index); // Proba zapisu indeksu- nieudana
                 addList.add(scanner.nextLine());
                 try {
-                    Files.write(path, addList, StandardOpenOption.APPEND);
+                    Files.write(path, addList);
                 } catch (IOException e) {
                     System.out.println("Description cannot be saved");
                 }
@@ -50,7 +57,7 @@ public class Main {
                 System.out.println("Please add task date (yyyy-mm-dd):");
                 addList.add(scanner.nextLine());
                 try {
-                    Files.write(path, addList, StandardOpenOption.APPEND);
+                    Files.write(path, addList);
                 } catch (IOException e) {
                     System.out.println("Date cannot be saved");
                 }
