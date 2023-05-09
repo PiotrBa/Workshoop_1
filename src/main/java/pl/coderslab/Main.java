@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -27,13 +28,17 @@ public class Main {
         options();
     }
 
+    public static void saveTask(){
+        StandardOpenOption saveTask = StandardOpenOption.APPEND;
+    }
+
 
     public static void options() {
         Path path = Paths.get("/Users/piotr/Desktop/CodersLab/Blok1/Workshoop_1/TaskManager/src/main/resources/tasks.csv");
         List<String> addList = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
         String option = scanner.nextLine();
-        int index = 0;
+
 
 
 
@@ -41,11 +46,6 @@ public class Main {
             case "1":
 
                 System.out.println("Pleas add task description");
-                for (int i = 1; i < 100000; i++){
-                    index = i++;
-
-                }
-                addList.indexOf(index); // Proba zapisu indeksu- nieudana
                 addList.add(scanner.nextLine());
                 try {
                     Files.write(path, addList);
@@ -66,10 +66,11 @@ public class Main {
                 System.out.println("Is you task is important");
                 addList.add(scanner.nextLine());
                 try {
-                    Files.write(path, addList, StandardOpenOption.APPEND);
+                    Files.write(path, addList);
                 } catch (IOException e) {
                     System.out.println("Important status cannot be saved");
                 }
+                saveTask();
 
 
                 while (true) {
@@ -77,20 +78,27 @@ public class Main {
                     options();
                 }
             case "2":
-                System.out.println("remove");
+                try{
+                    addList.removeAll(Collections.singleton(path));
+                }catch (Exception s){
+                    System.out.println("File is empty");
+                }
+                System.out.println(addList);
                 while (true) {
                     menu();
                     options();
                 }
             case "3":
                 try {
+
                     for (String line : Files.readAllLines(path)) {
-                        System.out.println(line);
+                        System.out.print(line + " ");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
+                System.out.println();
 
                 while (true) {
                     menu();
