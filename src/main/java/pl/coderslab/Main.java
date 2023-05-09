@@ -79,7 +79,7 @@ public class Main {
                 }
             case "2":
                 try{
-                    addList.removeAll(Collections.singleton(path));
+                    addList.removeAll(Collections.singleton(addList));
                 }catch (Exception s){
                     System.out.println("File is empty");
                 }
