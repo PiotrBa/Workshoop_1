@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    static final String FILE_NAME = "/Users/piotr/Desktop/CodersLab/Blok1/Workshoop_1/TaskManager/src/main/resources/tasks.csv";
+    static final String FILE_NAME = "***";
     static final String[] OPTIONS = {"add", "remove", "list", "exit"};
     static String[][] tasks;
 
