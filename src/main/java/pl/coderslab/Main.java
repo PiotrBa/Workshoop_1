@@ -1,114 +1,165 @@
 package pl.coderslab;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        menu();
-        options();
-    }
 
-    public static void menu() {
+    static final String FILE_NAME = "/Users/piotr/Desktop/CodersLab/Blok1/Workshoop_1/TaskManager/src/main/resources/tasks.csv";
+    static final String[] OPTIONS = {"add", "remove", "list", "exit"};
+    static String[][] tasks;
+
+
+    public static void printOptions(String[] tab) {
         final String BLUE = "\033[0;34m";
-        System.out.println(BLUE.concat("Please select an option"));
+        System.out.println(BLUE);
         final String RESET = "\033[0m";
-        System.out.println(RESET.concat("1 add"));
-        System.out.println("2 remove");
-        System.out.println("3 list");
-        System.out.println("4 exit");
-        System.out.println();
-        options();
-    }
-
-    public static void saveTask(){
-        StandardOpenOption saveTask = StandardOpenOption.APPEND;
+        System.out.println("Please select an option: " + RESET);
+        for (String option : tab) {
+            System.out.println(option);
+        }
     }
 
 
-    public static void options() {
-        Path path = Paths.get("/Users/piotr/Desktop/CodersLab/Blok1/Workshoop_1/TaskManager/src/main/resources/tasks.csv");
-        List<String> addList = new ArrayList<>();
+
+    public static void main(String[] args) {
+
+        tasks = loadDataToTab(FILE_NAME);
+        printOptions(OPTIONS);
         Scanner scanner = new Scanner(System.in);
-        String option = scanner.nextLine();
+        while (scanner.hasNextLine()) {
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "exit":
+                    saveTabToFile(FILE_NAME, tasks);
+                    final String RED = "\u001B[31m";
+                    System.out.println(RED + "Bye, bye.");
+                    System.exit(0);
+                    break;
+                case "add":
+                    addTask();
+                    break;
+                case "remove":
+                    removeTask(tasks, getTheNumber());
+                    System.out.println("Value was successfully deleted.");
+                    break;
+                case "list":
+                    printTab(tasks);
+                    break;
+                default:
+                    System.out.println("Please select a correct option.");
+            }
+
+            printOptions(OPTIONS);
+        }
 
 
+    }
+
+    public static int getTheNumber() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please select number to remove.");
+
+        String n = scanner.nextLine();
+        while (!isNumberGreaterEqualZero(n)) {
+            System.out.println("Incorrect argument passed. Please give number greater or equal 0");
+            scanner.nextLine();
+        }
+        return Integer.parseInt(n);
+    }
+
+    private static void removeTask(String[][] tab, int index) {
+        try {
+            if (index < tab.length) {
+                tasks = ArrayUtils.remove(tab, index);
+            }
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            System.out.println("Element not exist in tab");
+        }
+    }
+
+    public static boolean isNumberGreaterEqualZero(String input) {
+        if (NumberUtils.isParsable(input)) {
+            return Integer.parseInt(input) >= 0;
+        }
+        return false;
+    }
+
+    public static void printTab(String[][] tab) {
+        for (int i = 0; i < tab.length; i++) {
+            System.out.print(i + " : ");
+            for (int j = 0; j < tab[i].length; j++) {
+                System.out.print(tab[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    private static void addTask() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please add task description");
+        String description = scanner.nextLine();
+        System.out.println("Please add task due date");
+        String dueDate = scanner.nextLine();
+        System.out.println("Is your task important: true/false");
+        String isImportant = scanner.nextLine();
+        tasks = Arrays.copyOf(tasks, tasks.length + 1);
+        tasks[tasks.length - 1] = new String[3];
+        tasks[tasks.length - 1][0] = description;
+        tasks[tasks.length - 1][1] = dueDate;
+        tasks[tasks.length - 1][2] = isImportant;
+    }
 
 
-        switch (option) {
-            case "1":
+    public static String[][] loadDataToTab(String fileName) {
+        Path dir = Paths.get(fileName);
+        if (!Files.exists(dir)) {
+            System.out.println("File not exist.");
+            System.exit(0);
+        }
 
-                System.out.println("Pleas add task description");
-                addList.add(scanner.nextLine());
-                try {
-                    Files.write(path, addList);
-                } catch (IOException e) {
-                    System.out.println("Description cannot be saved");
+        String[][] tab = null;
+        try {
+            List<String> strings = Files.readAllLines(dir);
+            tab = new String[strings.size()][strings.get(0).split(",").length];
+
+            for (int i = 0; i < strings.size(); i++) {
+                String[] split = strings.get(i).split(",");
+                for (int j = 0; j < split.length; j++) {
+                    tab[i][j] = split[j];
                 }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return tab;
+    }
 
 
-                System.out.println("Please add task date (yyyy-mm-dd):");
-                addList.add(scanner.nextLine());
-                try {
-                    Files.write(path, addList);
-                } catch (IOException e) {
-                    System.out.println("Date cannot be saved");
-                }
+    public static void saveTabToFile(String fileName, String[][] tab) {
+        Path dir = Paths.get(fileName);
 
+        String[] lines = new String[tasks.length];
+        for (int i = 0; i < tab.length; i++) {
+            lines[i] = String.join(",", tab[i]);
+        }
 
-                System.out.println("Is you task is important");
-                addList.add(scanner.nextLine());
-                try {
-                    Files.write(path, addList);
-                } catch (IOException e) {
-                    System.out.println("Important status cannot be saved");
-                }
-                saveTask();
-
-
-                while (true) {
-                    menu();
-                    options();
-                }
-            case "2":
-                try{
-                    addList.removeAll(Collections.singleton(addList));
-                }catch (Exception s){
-                    System.out.println("File is empty");
-                }
-                System.out.println(addList);
-                while (true) {
-                    menu();
-                    options();
-                }
-            case "3":
-                try {
-
-                    for (String line : Files.readAllLines(path)) {
-                        System.out.print(line + " ");
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                System.out.println();
-
-                while (true) {
-                    menu();
-                    options();
-                }
-            case "4":
-                System.out.println("exit");
-                break;
-            default:
-                System.out.println("Please select correct option.");
+        try {
+            Files.write(dir, Arrays.asList(lines));
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 }
+
+
+
